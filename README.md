@@ -1,4 +1,4 @@
-# Los 14 de Emili · Invitación Halloween
+# Cumpleaños de Emily · Invitación Halloween
 
 Página responsive sin dependencias, sin instalación y sin imágenes externas. Incluye ilustración original en SVG, animación respetuosa de la preferencia de movimiento reducido, cuenta regresiva y RSVP. Fecha: 30 de octubre de 2026 a las 16:00, hora del centro de México (UTC−06:00).
 
@@ -8,12 +8,12 @@ Abre `index.html` con tu navegador. Puedes explorar toda la invitación. Antes d
 
 ## 2. Preparar Google Sheets
 
-1. Crea una hoja de cálculo en Google Sheets con tu cuenta, por ejemplo «Cumpleaños de Emili · RSVP». Mantén privado el acceso a la hoja.
+1. Crea una hoja de cálculo en Google Sheets con tu cuenta, por ejemplo «Cumpleaños de Emily · RSVP». Mantén privado el acceso a la hoja.
 2. Copia su ID: es la parte entre `/d/` y `/edit` en su dirección. En `https://docs.google.com/spreadsheets/d/ABC123/edit`, el ID sería `ABC123`.
 3. Abre **Extensiones → Apps Script** desde la hoja.
 4. Reemplaza el contenido de `Code.gs` del editor por el archivo `Code.gs` incluido.
-5. Sustituye `PEGA_AQUI_EL_ID_DE_TU_GOOGLE_SHEET` por el ID copiado, conservando las comillas.
-6. Guarda. Selecciona la función **setup** y pulsa **Ejecutar**. Autoriza el acceso solicitado para tu propio proyecto. Se creará la pestaña **Confirmaciones**, con encabezados y zona horaria de México.
+5. Guarda. El ID de la hoja ya viene escrito en `CONFIG.SPREADSHEET_ID`; si cambias de hoja, sustitúyelo conservando las comillas.
+6. Selecciona la función **setup** y pulsa **Ejecutar**. Autoriza el acceso solicitado para tu propio proyecto. Se creará la pestaña **Confirmaciones**, con encabezados y zona horaria de México.
 
 ## 3. Publicar el receptor de confirmaciones
 
@@ -42,32 +42,31 @@ Publica **index.html**, **styles.css**, **app.js** y **config.js**, juntos en la
 ## 5. Hacer una prueba real
 
 1. Abre la página publicada desde tu celular o una ventana privada.
-2. Envía una prueba con «Sí» y 2 personas; comprueba la nueva fila en **Confirmaciones**.
-3. Envía otra con «No»: debe guardar 0 personas.
-4. Verifica nombre, mensaje y fecha/hora. Borra únicamente las filas de prueba.
+2. Envía una prueba con «Sí, ahí estaré» y comprueba la nueva fila en **Confirmaciones**.
+3. Envía otra con «No podré ir»: debe registrar igualmente **No**.
+4. Verifica nombre y fecha/hora. Borra únicamente las filas de prueba.
 5. Abre Maps y comprueba que el punto corresponde al lugar. La invitación utiliza el enlace compartido por la persona organizadora: https://maps.app.goo.gl/P7bQBdXqPARnSrqt6.
 
 La conexión real requiere tu propia cuenta y despliegue; no viene desplegada. Solo se muestra «Respuesta guardada» tras leer `{ "ok": true }` del servidor. No se usa `no-cors`, pues daría una respuesta que el navegador no puede verificar. Se envía un POST con campos codificados como formulario, sin encabezados personalizados.
 
 ## Consultar quién viene
 
-Cada fila contiene timestamp del servidor, nombre, Sí/No, número de personas (incluye al invitado), mensaje y un ID de envío. En Google Sheets usa **Datos → Crear un filtro** para filtrar la columna **Asistirá**. Para contar personas confirmadas, suma la columna D: `=SUM(D2:D)` o `=SUMA(D2:D)` según el idioma de tu hoja. Los «No» siempre aportan 0.
+Cada fila contiene timestamp del servidor, nombre, Sí/No y un ID de envío. Con un solo invitado esto es todo: en la columna **Asistirá** ves si confirmó. Para una lista más larga, usa **Datos → Crear un filtro** sobre esa columna.
 
-Un reintento con los mismos datos en la misma página usa el mismo ID y no vuelve a agregar una fila. Una recarga o un cambio de respuesta constituye otro envío; no se identifican personas de forma única por nombre. Si alguien corrige su asistencia, conserva manualmente su respuesta más reciente y elimina la anterior antes de sumar. No se guardan datos personales en el almacenamiento del navegador.
+Un reintento con los mismos datos en la misma página usa el mismo ID y no vuelve a agregar una fila. Una recarga o un cambio de respuesta constituye otro envío; no se identifican personas de forma única por nombre. Si la persona corrige su asistencia, conserva manualmente su respuesta más reciente y elimina la anterior. No se guardan datos personales en el almacenamiento del navegador.
 
 ## Si algo falla
 
 - **Confirmaciones no habilitadas:** revisa `rsvpEndpoint` y que termine en `/exec`.
 - **No se pudo verificar:** revisa Internet, permisos de la implementación y la URL. El registro podría haberse guardado aunque la respuesta no llegara; reintenta sin recargar ni cambiar datos para reutilizar el ID, o comprueba la hoja.
-- **No se pudo guardar:** revisa el ID de la hoja, ejecuta `setup` y consulta **Ejecuciones** en Apps Script.
-- **Cambiaste Code.gs:** ve a **Implementar → Administrar implementaciones → Editar → Nueva versión → Implementar**. Conserva la URL existente o actualiza `config.js` si creas otra implementación.
+- **No se pudo guardar:** revisa el ID de la hoja, ejecuta `setup` y consulta **Ejecuciones** en Apps Script.- **Cambiaste Code.gs:** ve a **Implementar → Administrar implementaciones → Editar → Nueva versión → Implementar**. Conserva la URL existente o actualiza `config.js` si creas otra implementación.
 - No pruebes `doPost` con el botón Ejecutar; necesita los datos enviados desde el formulario.
 - Si tu alojamiento aplica una política CSP, permite conexiones a `https://script.google.com` y `https://*.googleusercontent.com`.
 
 ## Personalizar
 
-Textos y dirección: `index.html`. Colores y diseño: `styles.css`. Endpoint y fecha para la cuenta regresiva: `config.js`. Si cambias la fecha, actualiza también los textos visibles de `index.html`. El máximo de 20 personas está en el HTML y en `Code.gs`: actualiza ambos si hace falta.
+Textos y dirección: `index.html`. Colores y diseño: `styles.css`. Endpoint y fecha para la cuenta regresiva: `config.js`. Si cambias la fecha, actualiza también los textos visibles de `index.html`.
 
-El receptor valida datos, neutraliza fórmulas en mensajes/nombres y usa bloqueo para envíos simultáneos. Incluye un campo trampa contra bots básicos, pero no es un servicio con autenticación ni protección avanzada contra spam; es apropiado para compartir una invitación entre conocidos. Las cuotas aplicables son las de tu cuenta de Apps Script.
+El receptor valida el nombre y la respuesta, neutraliza fórmulas en el nombre y usa bloqueo para envíos simultáneos. Incluye un campo trampa contra bots básicos, pero no es un servicio con autenticación ni protección avanzada contra spam; es apropiado para compartir una invitación entre conocidos. Las cuotas aplicables son las de tu cuenta de Apps Script.
 
 Documentación oficial de Google: https://developers.google.com/apps-script/guides/web y https://developers.google.com/apps-script/guides/content

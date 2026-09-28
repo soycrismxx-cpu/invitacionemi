@@ -10,19 +10,9 @@
   }
   tick(); setInterval(tick, 1000);
   const form = document.getElementById('rsvp-form');
-  const guests = document.getElementById('guests');
   const status = document.getElementById('status');
   const button = document.getElementById('submit');
-  let previousGuests = '1';
   let pending = null;
-  function attendanceChanged() {
-    const no = form.elements.attendance.value === 'no';
-    if (no) { previousGuests = guests.value || '1'; guests.value = '0'; }
-    else guests.value = previousGuests;
-    guests.disabled = no; guests.min = no ? '0' : '1';
-    document.getElementById('guests-help').textContent = no ? 'Registraremos 0 personas si no puedes asistir.' : 'Inclúyete a ti y a tus acompañantes (máximo 20).';
-  }
-  form.querySelectorAll('[name=attendance]').forEach(input => input.addEventListener('change', attendanceChanged));
   function notify(message, kind = '') { status.textContent = message; status.dataset.kind = kind; }
   form.addEventListener('submit', async event => {
     event.preventDefault();
@@ -30,7 +20,7 @@
     if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(config.rsvpEndpoint || '')) {
       notify('Las confirmaciones todavía no están habilitadas. Por favor, avisa a quien organiza la fiesta.', 'error'); return;
     }
-    const data = { name: form.elements.name.value.trim(), attendance: form.elements.attendance.value, guests: guests.disabled ? '0' : guests.value, message: form.elements.message.value.trim(), website: form.elements.website.value };
+    const data = { name: form.elements.name.value.trim(), attendance: form.elements.attendance.value, website: form.elements.website.value };
     if (!data.name) { notify('Escribe tu nombre para continuar.', 'error'); form.elements.name.focus(); return; }
     const fingerprint = JSON.stringify(data);
     if (!pending || pending.fingerprint !== fingerprint) pending = { fingerprint, id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}` };
@@ -44,7 +34,7 @@
       if (!response.ok) throw new Error('http');
       const result = await response.json();
       if (!result.ok) { notify(result.error || 'No se pudo guardar la respuesta. Intenta de nuevo.', 'error'); return; }
-      notify(data.attendance === 'si' ? '¡Respuesta guardada! Nos vemos para celebrar a Emili. ♡' : 'Tu respuesta quedó guardada. Gracias por avisarnos. ♡');
+      notify(data.attendance === 'si' ? '¡Respuesta guardada! Nos vemos para celebrar a Emily. ♡' : 'Tu respuesta quedó guardada. Gracias por avisarnos. ♡');
       // Conservamos el ID hasta que cambien los datos para evitar duplicados en reintentos.
     } catch (error) {
       notify('No pudimos verificar que tu respuesta se guardara. Revisa tu conexión y vuelve a intentar con los mismos datos; el reintento no duplica el registro.', 'error');
