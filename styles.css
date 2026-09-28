@@ -772,12 +772,6 @@ footer:before,
 .big-star,
 .form-crest{display:none!important}
 .music-toggle{font-size:11px;letter-spacing:.08em;text-transform:uppercase}
-.spotlight-cursor{
-  position:fixed;
-  inset:0;
-  z-index:7;
-  pointer-events:none;
-}
 .garland{z-index:6}
 .hero{padding-top:clamp(132px,16vw,190px)}
 .hero .birthday-label{
@@ -793,4 +787,22 @@ footer:before,
 @media(max-width:650px){
   .hero{padding-top:124px}
   .hero .birthday-label{margin-top:8px}
+}
+
+#splash-canvas{
+  position:fixed;
+  inset:0;
+  z-index:8;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+}
+@media(max-width:650px){
+  .garland .pp,
+  .garland .pp .s,
+  .calavera,
+  .emily-portrait,
+  .portrait-base img{
+    animation:none!important;
+  }
 }
